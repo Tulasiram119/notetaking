@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { useNavigate } from 'react-router-dom';
-export default function Login() {
+export default function Login(props) {
     const[creditionals,setCreditionals] = useState({email:"",password:""}); 
     let navigate = useNavigate();   
     const handleSubmit = async (event)=>{
@@ -14,13 +14,14 @@ export default function Login() {
             
           });
         const json = await response.json();
-        console.log(json);
+        console.log(json.sucess);
         if(json.sucess){
             //save auth token and redirect
-            localStorage.setItem('token',json.authtoken);
+            localStorage.setItem('token',json.authtoken);            
+            props.showAlert("Logged in succesfully",'success');
             navigate('/');
         } else{
-            alert("invalid creditionals")
+          props.showAlert("invalid creditionals",'danger');
         }
     }
     const handleChange = (e)=>{
@@ -28,6 +29,7 @@ export default function Login() {
     }
   return (
     <div>
+      <h1>Login to use Notebook</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">

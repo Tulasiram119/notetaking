@@ -1,11 +1,18 @@
 import React from "react";
 
 export default function Alert(props) {
+  const captilize = (word)=>{
+    if(word === "danger"){
+      word = "error";
+    }
+    const lower = word.toLowerCase();
+    return lower.charAt(0).toUpperCase()+lower.slice(1);
+  }
   return (
-    <div>
-      <div className="alert alert-danger" role="alert">
-        {props.message}
+    <div style={{height:'50px'}}>
+      {props.alert && <div className= {`alert alert-${props.alert.type} alert-dismissible fade show`} role="alert">
+        <strong>{captilize(props.alert.type)}</strong>: {props.alert.msg}</div>}
+        
       </div>
-    </div>
   );
 }

@@ -1,34 +1,42 @@
 import React, { useContext, useEffect,useRef ,useState} from "react";
+import { useNavigate } from "react-router-dom";
 import Noteitem from "./Noteitem";
 import noteContext from "../context/notes/noteContext";
 import AddNote from "./AddNote";
 
-export default function Notes() {
+export default function Notes(props) {
   const { notes, getNotes , editNote} = useContext(noteContext);
-  
+  const navigate = useNavigate();
   const [note,setNote] = useState({id :"",etitle:"",edescription:"",etag:""});
   const ref = useRef(null);
   const refClose = useRef(null);
   useEffect(() => {
-    getNotes();
+    if(localStorage.getItem('token')){
+      getNotes();
+    } else{
+      navigate('/login')
+    }
+    
     // enlint-disable-next-line
   }, []);
   const updateNote = (currentNote) => {
     ref.current.click();
     setNote({id:currentNote._id,etitle: currentNote.title,edescription:currentNote.description,etag:currentNote.tag});
+    
   };  
   const handleChange = (e)=>{
     setNote({...note,[e.target.name]:e.target.value});
 }
 const handleClick = (e)=>{    
-    editNote(note.id,note.etitle,note.edescription,note.etag);    
+    editNote(note.id,note.etitle,note.edescription,note.etag); 
+    props.showAlert("Updated Sucessfully","success");       
     refClose.current.click(); 
     
    
 }
   return (
     <>
-    <AddNote />
+    <AddNote showAlert = {props.showAlert} />
       <button
         type="button"
         className="btn btn-primary d-none"
@@ -117,7 +125,7 @@ const handleClick = (e)=>{
         {notes.length === 0 && 'No Notes to diaplay'}
         </div>
         {notes.map((note) => (
-          <Noteitem key={note._id} updateNote={updateNote} note={note} />
+          <Noteitem key={note._id} updateNote={updateNote} note={note} showAlert = {props.showAlert}/>
         ))}
       </div>
     </>
